@@ -35,10 +35,10 @@
 (test
  (name LU_decomposition_multicore)
  (libraries domainslib)
- (flags (:standard -runtime-variant d))
+ (flags
+  (:standard -runtime-variant d))
  (modules LU_decomposition_multicore)
  (modes native))
-
 
 (test
  (name spectralnorm2)
@@ -46,10 +46,10 @@
  (modes native))
 
 (test
-  (name sum_par)
-  (libraries domainslib)
-	(modules sum_par)
-	(modes native))
+ (name sum_par)
+ (libraries domainslib)
+ (modules sum_par)
+ (modes native))
 
 (test
  (name task_throughput)
@@ -109,4 +109,10 @@
  (name off_by_one)
  (libraries domainslib)
  (modules off_by_one)
+ (modes native))
+
+(test
+ (name test_batcher)
+ (libraries domainslib unix)
+ (modules test_batcher)
  (modes native))
