@@ -1,12 +1,27 @@
-type 'a task = unit -> 'a
-(** Type of task *)
+module Types : sig
+    type 'a task = unit -> 'a
+    (** Type of task *)
 
-type !'a promise
-(** Type of promises *)
+    type !'a promise
+    (** Type of promises *)
 
-type pool
-(** Type of task pool *)
+    val fill : 'a promise -> 'a -> unit
+end
 
+module type DS = sig
+    type op
+    type res
+    (* Should be an (op * 'a promise) array *)
+    val bop : (op * res Types.promise) list -> unit
+  end
+  
+module Make (DS : DS) : sig
+    open Types
+    type pool
+    (** Type of task pool *)
+
+val ds_op_wrapperv1 : pool -> DS.op -> DS.res
+    
 val setup_pool : ?name:string -> num_domains:int -> unit -> pool
 (** Sets up a task execution pool with [num_domains] new domains. If [name] is
     provided, the pool is mapped to [name] which can be looked up later with
@@ -64,4 +79,4 @@ val parallel_for : ?chunk_size:int -> start:int -> finish:int ->
 
     Must be called with a call to {!run} in the dynamic scope to handle the
     internal algebraic effects for task synchronization. *)
-
+end

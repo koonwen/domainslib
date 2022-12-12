@@ -2,3 +2,8 @@
  (name domainslib)
  (public_name domainslib)
  (libraries lockfree))
+
+(env
+ (dev
+  (flags
+   (:standard -w -32-34))))

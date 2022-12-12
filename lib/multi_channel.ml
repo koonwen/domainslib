@@ -198,4 +198,11 @@ let rec recv mchan =
                Mutex.unlock mc.mutex
             end;
             recv mchan
-      end
+          end
+
+let recv_op mchan =
+  let dls = get_local_state mchan in
+  try
+    Some (recv_poll_repeated mchan dls mchan.recv_block_spins)
+  with
+    Exit -> None
