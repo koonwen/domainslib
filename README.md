@@ -97,3 +97,29 @@ $ git clone https://github.com/ocaml-multicore/domainslib
 $ cd domainslib
 $ opam pin add domainslib file://`pwd`
 ```
+
+## Community
+Hi everyone, thanks to the new multicore support, I am investigating implementing a library of high-throughput "Batch-parallel Data structures".
+
+The general idea behind why these data structures have good performance is because they recieve operations in batches and only needs to handle a single batch at any point of time. The benefits of this invariant are that better optimisations and parallelism strategies can be derived because we can have prior information of the operations that are going to be executed in parallel. This is unlike traditional parallel datastructures which need to be designed more conservatively to be able to handle arbritrary concurrent operations. For more information, you can refer to this paper https://www.cse.wustl.edu/~kunal/resources/Papers/batcher.pdf 
+
+In order to implement this in OCaml, I'm currently considering the following design:
+1) The interface of the batch-parallel data structures will be
+```
+module type DS = sig
+  type t
+  
+  (* ADT of operations and input parameters *)
+  type op
+  (* ADT of the corresponding operation result *)
+  type res
+  
+  (* bop operations num, expects a left adjusted array of operations and the number of operations in the batch.
+     All results of the operations are filled when the function returns *)
+  val bop : (op * res Types.promise) array -> ~num:int -> unit
+end
+```
+
+2) To additionally provide library users with their usual atomic operation API's, the paper also describes a custom scheduler which performs implicit batching of operations. My general sense here is to tweak domainslib's Task module into a functor that takes in the DS module signature. Then figure out how to adjust its work-stealing scheduler to support implicit batching.
+
+However I've run into the following problems: 

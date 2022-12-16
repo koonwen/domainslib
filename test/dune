@@ -114,5 +114,7 @@
 (test
  (name test_batcher)
  (libraries domainslib unix)
+ (preprocess
+  (pps ppx_deriving.show))
  (modules test_batcher)
  (modes native))
