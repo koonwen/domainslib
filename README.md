@@ -120,6 +120,6 @@ module type DS = sig
 end
 ```
 
-2) To additionally provide library users with their usual atomic operation API's, the paper also describes a custom scheduler which performs implicit batching of operations. My general sense here is to tweak domainslib's Task module into a functor that takes in the DS module signature. Then figure out how to adjust its work-stealing scheduler to support implicit batching.
+2) To additionally provide library users with their usual atomic operation API's, the paper also describes a custom scheduler which performs implicit batching of operations. My general sense here is to tweak domainslib's Task module into a functor that takes in the DS module signature and adjust the scheduler to perform implicit batching and then call `bop`.
 
-However I've run into the following problems: 
+However this design runs into the problem that the DS implementation cannot use the parallel primitives async and await. I've thought about designing the DS and the Scheduler modules as recursive modules, but this exposes too much of the implementation details of the scheduler to the DS module. Ideally, I would like to make the implementations of the Scheduler and the DS as disjoint and abstract as possible whilst making their linking user friendly. Any thoughts on how to do this?

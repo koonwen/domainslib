@@ -111,10 +111,10 @@
  (modules off_by_one)
  (modes native))
 
-(test
- (name test_batcher)
+(tests
+ (names batched_counter batched_slist)
  (libraries domainslib unix)
  (preprocess
   (pps ppx_deriving.show))
- (modules test_batcher)
+ (modules batched_counter batched_slist)
  (modes native))

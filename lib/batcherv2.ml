@@ -35,15 +35,15 @@ module type DS = sig
   type op
   type res
   (* Should be an (op * 'a promise) array *)
-  val bop : (op * res Promises.promise) list -> unit
+  (* val bop : (op * res Promises.promise) list -> unit *)
 end
 
 module Make (DS : DS) = struct
-
+  include DS
   open Promises
   type message += BatchedOp
-
   let lock = Mutex.create ()
+  let stats : (int, int) Hashtbl.t = Hashtbl.create 100
   let with_lock f = 
     Mutex.lock lock;
     let res = f () in
@@ -60,6 +60,7 @@ module Make (DS : DS) = struct
   }
 
   type pool = pool_data option Atomic.t
+  type bop = (op * res Promises.promise) list -> unit
 
   let get_pool_data p =
     match Atomic.get p with
@@ -96,7 +97,7 @@ module Make (DS : DS) = struct
     | Raised (e, bt) -> Printexc.raise_with_backtrace e bt
     | Pending _ -> perform (Wait (promise, pd.task_chan))
 
-  let rec try_launch pd (promise : DS.res promise) () = 
+  let rec try_launch pd (promise : DS.res promise) (bop : bop) () = 
     match Atomic.get promise with
     | Returned (_ : DS.res) -> ()
     | Raised (e, bt) -> Printexc.raise_with_backtrace e bt
@@ -111,19 +112,22 @@ module Make (DS : DS) = struct
               pd.batch := [];
               batch) in
             let n = List.length batch in
-            if n > 1 then Printf.printf "Batch size = %d\n%!" n;
-            DS.bop batch;
+            (match Hashtbl.find_opt stats n with
+            | Some v -> Hashtbl.replace stats n (v + 1)
+            | None -> Hashtbl.replace stats n 1);
+            (* if n > 1 then Printf.printf "Batch size = %d\n%!" n; *)
+            bop batch;
             Atomic.set pd.active_batch false
           end
-        else Multi_channel.send pd.ds_chan (Work (try_launch pd promise))
+        else Multi_channel.send pd.ds_chan (Work (try_launch pd promise bop))
 
 (* Doesn't automatically switch, requires any worker to encounter BatchedMode to switch. Also because of the way that this is designed, if there are multiple DS calls within batching mode, more cores will be dedicated because BatchedMode will be recieved in the task channel *)
-  let ds_op_wrapperv1 pool op =
+  let ds_op_wrapperv1 pool bop op =
     let pd = get_pool_data pool in
     let promise = Atomic.make (Pending []) in
     (* Install promise and op into batch *)
     with_lock (fun () -> pd.batch := (op, promise) :: !(pd.batch));
-    Multi_channel.send pd.ds_chan (Work (try_launch pd promise));
+    Multi_channel.send pd.ds_chan (Work (try_launch pd promise bop));
     Multi_channel.send pd.task_chan BatchedOp;
     match Atomic.get promise with
     | Returned v -> v
@@ -156,8 +160,7 @@ module Make (DS : DS) = struct
   and ds_mode task_chan ds_chan =
     match Multi_channel.recv_op ds_chan with
     | Some Work f -> step f (); ds_mode task_chan ds_chan
-    | Some BatchedOp -> failwith "Not implemented"
-      (* check that batch is not active before sending work, else, send to back of ds chan *)
+    (* check that batch is not active before sending work, else, send to back of ds chan *)
     | _ -> worker task_chan ds_chan
 
   (* Because of this, we cannot run the program with only 1 domain, it will not be able to pick up the tasks *)
