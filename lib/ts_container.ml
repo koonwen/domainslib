@@ -1,3 +1,4 @@
+[@@@warning "-27-32"]
 module ChanBased = struct
   type 'a t = {
     chan : 'a Chan.t;
@@ -24,33 +25,54 @@ module ChanBased = struct
   let size t = Atomic.get t.size 
 end
 
-include ChanBased
+(* include ChanBased *)
 
-(* type container = ELT.t option array 
-   type t = {
-   switching : bool Atomic.t;
-   primary : container Atomic.t;
-   mutable secondary : container;
-   size : int Atomic.t
-   }
+type 'a container = 'a option array 
+type 'a t = {
+  switching : bool Atomic.t;
+  mutable primary : 'a container;
+  mutable secondary : 'a container;
+  batch_size : int;
+  size : int Atomic.t
+}
 
-   let create ~batch_size () = {
-   switching = Atomic.make false;
-   primary = Atomic.make @@ Array.make batch_size None;
-   secondary =  Array.make batch_size None;
-   size = Atomic.make 0
-   }
+let create ?(batch_size=1000) () = {
+  switching = Atomic.make false;
+  primary = Array.make batch_size None;
+  secondary =  Array.make batch_size None;
+  batch_size;
+  size = Atomic.make 0
+}
 
-   let add (t : t) (elt : ELT.t) = 
-   (* Make sure switching process is not happening *)
-   while Atomic.get t.switching do () done;
-   let slot = Atomic.fetch_and_add t.size 1 in
-   t.container.(slot) <- Some elt
+let add pool (t : 'a t) elt = 
+  (* Make sure switching process is not happening *)
+  let is_done = ref false in
+  let current_size = ref 0 in
+  while not !is_done do
+    while Atomic.get t.switching ||
+          (current_size := Atomic.get t.size; !current_size >= t.batch_size)
+    do Task.yield pool done;
+    if Atomic.compare_and_set t.size !current_size (!current_size + 1) then
+      begin
+        t.primary.(!current_size) <- Some elt; 
+        is_done := true
+      end
+  done
 
-   let get t = 
-   let size = Atomic.get t.size in
-   let batch = Array.make t.size None in
-   Array.blit t.container 0 batch 0 t.size;
-   batch
+let rec get pool t = 
+  while Atomic.get t.switching do
+    Task.yield pool
+  done;
+  if Atomic.compare_and_set t.switching false true then
+    begin
+      let tmp = t.primary in
+      t.primary <- t.secondary;
+      t.secondary <- tmp;
+      let size = Atomic.exchange t.size 0 in
+      let res = Array.init size (fun i -> tmp.(i) |> Option.get) in
+      Atomic.set t.switching false;
+      res
+    end
+  else get pool t
 
-   let size t = failwith "" *)
+let size t = Atomic.get t.size

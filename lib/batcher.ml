@@ -47,7 +47,7 @@ module Make (S : S) = struct
     && Atomic.compare_and_set t.running false true 
     then
       begin
-        let batch = Ts_container.get t.container in
+        let batch = Ts_container.get t.pool t.container in
         S.run t.ds t.pool batch;
         Atomic.set t.running false;
         try_launch t
@@ -56,7 +56,7 @@ module Make (S : S) = struct
   let apply t op =
     let pr, set = Task.promise () in
     let op_set = S.Mk (op, set) in
-    Ts_container.add t.container op_set;
+    Ts_container.add t.pool t.container op_set;
     try_launch t;
     Task.await t.pool pr
 
@@ -89,7 +89,7 @@ module Make1 (S : S1) = struct
     && Atomic.compare_and_set t.running false true 
     then
       begin
-        let batch = Ts_container.get t.container in
+        let batch = Ts_container.get t.pool t.container in
         S.run t.ds t.pool batch;
         Atomic.set t.running false;
         try_launch t
@@ -98,7 +98,7 @@ module Make1 (S : S1) = struct
   let apply t op =
     let pr, set = Task.promise () in
     let op_set = S.Mk (op, set) in
-    Ts_container.add t.container op_set;
+    Ts_container.add t.pool t.container op_set;
     try_launch t;
     Task.await t.pool pr
 
