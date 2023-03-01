@@ -122,9 +122,30 @@ OPTIONS
 
 
 ### Using the Jupyter Notebook
+We provide a Jupyter Notebook that can be used to recreate our experimental results. 
+
+First, you must have jupyterlab installed:
+```
+pip install jupyterlab
+```
+
 
 To use the Jupyter notebook, start jupyternotebook from the root of this project:
-
 ```
 jupyter-lab --port=8889
 ```
+
+Navigate to `benchmarks/paper-artefact.ipynb` to run our experiments.
+
+We make use of a `utils` library (found in `benchmarks/utils.py`) to
+define some helpers for running benchmarks. The examples in the
+notebook and the markdown should be give an idea of how to use the
+helpers.
+
+Of note:
+
+- `utils.plot_results` -- given a list of results from a performance
+  evaluation, plots a graph of times
+
+- `utils.plot_throughput_results` -- given a list of results from a
+  performance evaluation, plots a graph of throughput
