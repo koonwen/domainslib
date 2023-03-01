@@ -5,19 +5,23 @@
 (cram enable)
 
 (source (github ocaml-multicore/domainslib))
-(authors "KC Sivaramakrishnan <kc@kcsrk.info>")
-(maintainers "KC Sivaramakrishnan <kc@kcsrk.info>")
-(documentation "https://kayceesrk.github.io/domainslib/doc")
+(authors "")
+(maintainers "")
+(documentation "")
 (license "ISC")
 
 (package
  (name domainslib)
- (synopsis "Parallel Structures over Domains for Multicore OCaml")
+ (synopsis "Fork of domainslib with batching support")
  (depends
   (ocaml (>= "5.0"))
   (lockfree (>= "0.2.0"))
-  iter
   batteries
+  (cmdliner (>= "1.1.1"))
+  (ptime (>= "1.1.0"))
+  (ptime (>= "1.1.0"))
+  (progress (>= "0.2.1"))
+  (datalog (>= "0.4.1"))
   (mirage-clock-unix (and :with-test (>= "4.2.0")))
   (qcheck-core (and :with-test (>= "0.20")))
   (qcheck-multicoretests-util (and :with-test (>= "0.1")))
@@ -35,10 +39,7 @@ the multicore run-time of OCaml 5.0.")
   base-domains
   (ppx_deriving         (>= "5.2.1"))
   (qcheck-core          (>= "0.20"))
-  (ppx_deriving_qcheck  (>= "0.2.0"))
-  (qcheck-lin           (= :version))
-  (qcheck-stm           (= :version))))
-
+  (ppx_deriving_qcheck  (>= "0.2.0"))))
 
 (package
  (name qcheck-lin)

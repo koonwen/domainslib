@@ -1,3 +1,8 @@
+OBatcher is currently implemented as a fork of Domainslib. 
+
+The original license of Domainslib is included below.
+=======================================================================
+
 Copyright (c) 2016 KC Sivaramakrishnan
 
 Permission to use, copy, modify, and/or distribute this software for any
