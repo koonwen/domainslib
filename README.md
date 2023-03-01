@@ -1,5 +1,30 @@
 # OBatcher Domainslibs Fork Artefact
 
+This library implements an experimental research fork of Multicore
+OCaml's standard Domainslib library that implements batch-parallel 
+data structures.
+
+- Domainslib is available here: https://github.com/ocaml-multicore/domainslib
+  - Our development is built on top of a pending PR to domainslib that
+    adds support for creating empty promises, as exposed by the
+    function `promise` in `lib/task.ml`, line 40.
+
+- The implementation of OBatcher is under `lib/batcher.ml` which
+  provides the `Make` functor it provides to convert explicitly
+  batched data-structures to direct style.
+  
+- The directory `data/` provides the implementation of OBatcher's
+  batch-parallel B-tree (in `data/btree.ml`) and its batch-parallel
+  Skiplist (in `data/skiplist.ml`). 
+
+- The `benchmarks` directory includes the experimental setup for any
+  evaluations presented in the paper. The jupyter notebook
+  `paper-artefact.ipynb` can be used to reproduce our results.
+  
+  - We do not package the `datalog` library in this artefact as it is
+    available on opam. `benchmarks/datalog_bench.ml` describes our
+    coarse-grained and batched wrappers around this library.
+
 Note: For the jupyter notebook, you will need `ipympl` installed, via `pip install ipympl`.
 
 This fork introduces support for a technique called "batching" which
