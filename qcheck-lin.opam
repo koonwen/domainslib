@@ -6,8 +6,8 @@ A testing library based on QCheck to test interface behaviour under parallel
 usage. Lin will generate and run random parallel tests and check the observed
 behaviour for sequential consistency, that is, whether they can be linearized
 and explained by some sequential interleaving."""
-maintainer: ["KC Sivaramakrishnan <kc@kcsrk.info>"]
-authors: ["KC Sivaramakrishnan <kc@kcsrk.info>"]
+maintainer: [""]
+authors: [""]
 license: "ISC"
 tags: [
   "test"
@@ -18,7 +18,7 @@ tags: [
   "sequential consistency"
 ]
 homepage: "https://github.com/ocaml-multicore/domainslib"
-doc: "https://kayceesrk.github.io/domainslib/doc"
+doc: ""
 bug-reports: "https://github.com/ocaml-multicore/domainslib/issues"
 depends: [
   "dune" {>= "3.0"}

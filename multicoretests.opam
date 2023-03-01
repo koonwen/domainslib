@@ -4,7 +4,7 @@ synopsis: "Experimental multicore test suite of OCaml 5.0"
 description: """
 This package contains a collection of randomized QCheck tests to exercise
 the multicore run-time of OCaml 5.0."""
-maintainer: ["KC Sivaramakrishnan <kc@kcsrk.info>"]
+maintainer: [""]
 authors: ["Multiple contributors"]
 license: "ISC"
 tags: [
@@ -17,7 +17,7 @@ tags: [
   "non-determinism"
 ]
 homepage: "https://github.com/ocaml-multicore/domainslib"
-doc: "https://kayceesrk.github.io/domainslib/doc"
+doc: ""
 bug-reports: "https://github.com/ocaml-multicore/domainslib/issues"
 depends: [
   "dune" {>= "3.0"}
