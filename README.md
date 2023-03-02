@@ -17,6 +17,13 @@ data structures.
   batch-parallel B-tree (in `data/btree.ml`) and its batch-parallel
   Skiplist (in `data/skiplist.ml`). 
 
+- The directory `multicoretests/src/` contains our linearisability
+  tests for the skiplist (in
+  `multicoretests/src/skiplist/lin_tests.ml`) and btree (in
+  `multicoretests/src/btree/lin_tests.ml`) built on top of OCaml
+  multicoretests' (https://github.com/ocaml-multicore/multicoretests)
+  testing harness.
+
 - The `benchmarks` directory includes the experimental setup for any
   evaluations presented in the paper. The jupyter notebook
   `paper-artefact.ipynb` can be used to reproduce our results.
