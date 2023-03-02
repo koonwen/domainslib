@@ -42,7 +42,6 @@ module Make (S : S) = struct
       running = Atomic.make false;
       container = Ts_container.create () }
 
-
   let rec try_launch t =
     if Ts_container.size t.container > 0 
     && Atomic.compare_and_set t.running false true 
@@ -54,7 +53,7 @@ module Make (S : S) = struct
         try_launch t
       end
 
-  let try_launch t =
+  let rec try_launch_inner t cnt = 
     if Ts_container.size t.container > 0 
     && Atomic.compare_and_set t.running false true 
     then
@@ -62,8 +61,12 @@ module Make (S : S) = struct
         let batch = Ts_container.get t.container in
         S.run t.ds t.pool batch;
         Atomic.set t.running false;
-        ignore @@ Task.async t.pool (fun () -> try_launch t)
+        if cnt > 10
+        then ignore @@ Task.async t.pool (fun () -> try_launch t)
+        else try_launch_inner t (cnt + 1)
       end
+
+  let try_launch t = try_launch_inner t 0
 
   let apply t op =
     let pr, set = Task.promise () in
@@ -107,7 +110,7 @@ module Make1 (S : S1) = struct
         try_launch t
       end
 
-  let try_launch t =
+  let rec try_launch_inner t cnt = 
     if Ts_container.size t.container > 0 
     && Atomic.compare_and_set t.running false true 
     then
@@ -115,8 +118,12 @@ module Make1 (S : S1) = struct
         let batch = Ts_container.get t.container in
         S.run t.ds t.pool batch;
         Atomic.set t.running false;
-        ignore @@ Task.async t.pool (fun () -> try_launch t)
+        if cnt > 10
+        then ignore @@ Task.async t.pool (fun () -> try_launch t)
+        else try_launch_inner t (cnt + 1)
       end
+
+  let try_launch t = try_launch_inner t 0
 
   let apply t op =
     let pr, set = Task.promise () in
