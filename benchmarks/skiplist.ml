@@ -158,7 +158,8 @@ module Batched = struct
                       (Member test_spec.search_elements.(i - Array.length test_spec.insert_elements)))
           else
             ignore (BatchedSkiplist.apply t Size)
-        )
+        );
+    BatchedSkiplist.wait_for_batch t
 
   let cleanup (_t: t) (_test_spec: test_spec) = ()
 

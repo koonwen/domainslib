@@ -128,3 +128,36 @@ skiplist_explicit :
 	$(B) skiplist-explicit --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 6
 	$(B) skiplist-explicit --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 7
 	$(B) skiplist-explicit --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 8
+
+btree_batched_validate :
+	printf "Btree-batched\n"
+	$(B) btree-batched --init-count=$(B_PRESET) --count=$(B_OPS) -i $(ITER) -w $(WARMUP) -D 1 -T
+	$(B) btree-batched --init-count=$(B_PRESET) --count=$(B_OPS) -i $(ITER) -w $(WARMUP) -D 2 -T
+	$(B) btree-batched --init-count=$(B_PRESET) --count=$(B_OPS) -i $(ITER) -w $(WARMUP) -D 3 -T
+	$(B) btree-batched --init-count=$(B_PRESET) --count=$(B_OPS) -i $(ITER) -w $(WARMUP) -D 4 -T
+	$(B) btree-batched --init-count=$(B_PRESET) --count=$(B_OPS) -i $(ITER) -w $(WARMUP) -D 5 -T
+	$(B) btree-batched --init-count=$(B_PRESET) --count=$(B_OPS) -i $(ITER) -w $(WARMUP) -D 6 -T
+	$(B) btree-batched --init-count=$(B_PRESET) --count=$(B_OPS) -i $(ITER) -w $(WARMUP) -D 7 -T
+	$(B) btree-batched --init-count=$(B_PRESET) --count=$(B_OPS) -i $(ITER) -w $(WARMUP) -D 8 -T
+
+skiplist_batched :
+	printf "Skiplist-Batched\n"
+	$(B) skiplist-batched --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 1
+	$(B) skiplist-batched --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 2
+	$(B) skiplist-batched --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 3
+	$(B) skiplist-batched --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 4
+	$(B) skiplist-batched --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 5
+	$(B) skiplist-batched --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 6
+	$(B) skiplist-batched --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 7
+	$(B) skiplist-batched --init-count=$(S_PRESET) --count=$(S_INS) -i $(ITER) --no-searches=$(S_SEARCH) --no-size=$(S_SIZE) -w $(WARMUP) -D 8
+
+counter_batched :
+	printf "Counter-Batched\n"
+	$(B) counter-batched --count=$(C_OPS) --rand -i $(ITER) -w $(WARMUP) -D 1
+	$(B) counter-batched --count=$(C_OPS) --rand -i $(ITER) -w $(WARMUP) -D 2
+	$(B) counter-batched --count=$(C_OPS) --rand -i $(ITER) -w $(WARMUP) -D 3
+	$(B) counter-batched --count=$(C_OPS) --rand -i $(ITER) -w $(WARMUP) -D 4
+	$(B) counter-batched --count=$(C_OPS) --rand -i $(ITER) -w $(WARMUP) -D 5
+	$(B) counter-batched --count=$(C_OPS) --rand -i $(ITER) -w $(WARMUP) -D 6
+	$(B) counter-batched --count=$(C_OPS) --rand -i $(ITER) -w $(WARMUP) -D 7
+	$(B) counter-batched --count=$(C_OPS) --rand -i $(ITER) -w $(WARMUP) -D 8

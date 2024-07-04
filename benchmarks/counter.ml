@@ -121,7 +121,8 @@ module Batched = struct
           else if i < test_spec.increments + test_spec.decrements 
           then BatchedCounter.apply counter Decr
           else BatchedCounter.apply counter Get |> ignore
-        )
+        );
+    BatchedCounter.wait_for_batch counter
 
   let cleanup (_t: t) (_test_spec: test_spec) = ()
 

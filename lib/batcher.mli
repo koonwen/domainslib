@@ -58,6 +58,17 @@ module Make : functor (S : S) -> sig
   val apply : t -> 'a op -> 'a
   (** [apply t op] applies the operation [op] to [t]. *)
 
+  val restart_batcher_timer : t -> unit
+
+  val is_batch_running : t -> bool
+  (** [is_batch_running t] returns [true] if there is are active or
+      pending operations on the batched data structure. *)
+
+  val wait_for_batch : t -> unit
+  (** [wait_for_batch t] waits until all active and pending operations
+      on the batched data structure have completed. Allows domain to
+      yield while waiting like [await]. *)
+
   val unsafe_get_internal_data : t -> S.t
   [@@@alert unsafe "For developer use"]
 
@@ -81,6 +92,17 @@ module Make1 : functor (S : S1) -> sig
 
   val apply : 'a t -> ('a, 'b) op -> 'b
   (** [apply t op] applies the operation [op] to [t]. *)
+
+  val restart_batcher_timer : 'a t -> unit
+
+  val is_batch_running : 'a t -> bool
+  (** [is_batch_running t] returns [true] if there is are active or
+      pending operations on the batched data structure. *)
+
+  val wait_for_batch : 'a t -> unit
+  (** [wait_for_batch t] waits until all active and pending operations
+      on the batched data structure have completed. Allows domain to
+      yield while waiting like Domainslib's [await]. *)
 
   val unsafe_get_internal_data : 'a t -> 'a S.t
   [@@@alert unsafe "For developer use"]

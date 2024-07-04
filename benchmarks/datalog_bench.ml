@@ -302,7 +302,8 @@ module BatchParallel = struct
         else ignore (
           ignore @@
           ConcurrentDatalog.apply t (Search test_spec.search_elements.(i - Array.length test_spec.insert_elements)))
-      )
+      );
+    ConcurrentDatalog.wait_for_batch t
 
   let cleanup _ _ = ()
 
@@ -336,7 +337,8 @@ module BatchParallelBasic = struct
         else ignore (
           ignore @@
           ConcurrentBasicDatalog.apply t (Search test_spec.search_elements.(i - Array.length test_spec.insert_elements)))
-      )
+      );
+    ConcurrentBasicDatalog.wait_for_batch t
 
   let cleanup _ _ = ()
 
